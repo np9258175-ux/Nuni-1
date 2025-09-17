@@ -3,12 +3,12 @@ import fetch from "node-fetch";
 import dotenv from "dotenv";
 import cors from "cors";
 import path from "path";
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 
 dotenv.config();
 const app = express();
 
-// Use ES Modules equivalent of __dirname
+// ES Modules equivalent of __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -16,8 +16,8 @@ const __dirname = path.dirname(__filename);
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 
-// Serve static frontend files
-app.use(express.static(path.join(__dirname, '../frontend')));
+// Serve static frontend files (inside project-root/frontend)
+app.use(express.static(path.join(__dirname, "frontend")));
 
 const PORT = process.env.PORT || 3000;
 const API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/";
@@ -31,7 +31,9 @@ app.post("/generate", async (req, res) => {
     const apiKey = process.env.NANO_BANANA_API_KEY;
 
     if (!apiKey) {
-      return res.status(500).json({ error: "API key is missing from the server configuration." });
+      return res
+        .status(500)
+        .json({ error: "API key is missing from the server configuration." });
     }
 
     const payloadParts = [];
@@ -57,7 +59,9 @@ app.post("/generate", async (req, res) => {
 
     if (!response.ok) {
       const errData = await response.json();
-      return res.status(response.status).json({ error: errData.error?.message || "API error" });
+      return res
+        .status(response.status)
+        .json({ error: errData.error?.message || "API error" });
     }
 
     const result = await response.json();
@@ -68,9 +72,11 @@ app.post("/generate", async (req, res) => {
   }
 });
 
-// Serve the index.html file on the root URL
+// Serve index.html for root URL
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  res.sendFile(path.join(__dirname, "frontend", "index.html"));
 });
 
-app.listen(PORT, () => console.log(`✅ Backend running on http://localhost:${PORT}`));
+app.listen(PORT, () =>
+  console.log(`✅ Backend running on http://localhost:${PORT}`)
+);
